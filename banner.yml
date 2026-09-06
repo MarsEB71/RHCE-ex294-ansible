@@ -1,0 +1,9 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: Add test to banner
+      ansible.builtin.lineinfile:
+        path: /opt/banner
+        line: MOCK3
+        create: yes
