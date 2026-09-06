@@ -1,8 +1,14 @@
 ---
-hosts: prod
-become: yes
-tasks:
-  - name: Set target to multi-user.target
-    ansible.builtin.command: systemctl set-default multi-user.target
+- hosts: prod
+  become: yes
+  vars:
+    set_target: multi-user.target
+  tasks:
+    - name: get default target
+      ansible.builtin.command: systemctl get-default
+      register: get_default
+    - name: Set target to multi-user.target
+      ansible.builtin.command: systemctl set-default "{{ set_target }}"
+      when: set_target not in get_default.stdout
 
-    
+  
