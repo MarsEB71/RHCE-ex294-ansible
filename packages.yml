@@ -1,0 +1,16 @@
+---
+- name: install package on prod
+  hosts: prod
+  tasks:
+    - name: install valkey
+      ansible.builtin.dnf:
+        name: valkey
+        state: present
+      when: ansible_facts['swaptotal_mb'] > 30
+- name: install package on dev
+  hosts: dev
+  tasks:
+    - name: install net tools
+      ansible.builtin.dnf:
+        name: net-tools
+        state: present
