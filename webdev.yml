@@ -4,17 +4,13 @@
   become: yes
   tasks:
     
-    - name: install httpd
+    - name: install firewall, python3-firewall and httpd
       ansible.builtin.dnf:
-        name: httpd
-        state: latest
-
-    - name: install firewalld and python bindings
-      ansible.builtin.dnf:
-      name:
-        - firewalld
-        - python3-firewall
-      state: present
+        name:
+          - httpd
+          - firewalld
+          - python3-firewall
+        state: present
 
     - name: ensure firewalld service is running
       ansible.builtin.systemd_service:
