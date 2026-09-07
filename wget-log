@@ -1,0 +1,11 @@
+--2026-09-07 10:23:55--  https://gitlab.com/bakhishlivugar/ex294_exam_project/-/raw/main/report.yml?ref_type=heads
+Resolving gitlab.com (gitlab.com)... 172.65.251.78, 2606:4700:90:0:f22e:fbec:5bed:a9b9
+Connecting to gitlab.com (gitlab.com)|172.65.251.78|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 1132 (1.1K) [text/plain]
+Saving to: ‘report.yml?ref_type=heads’
+
+report.yml?ref_type=heads                                     0%[                                                                                                                                         ]       0  --.-KB/s               report.yml?ref_type=heads                                   100%[========================================================================================================================================>]   1.11K  --.-KB/s    in 0s      
+
+2026-09-07 10:23:56 (17.2 MB/s) - ‘report.yml?ref_type=heads’ saved [1132/1132]
+

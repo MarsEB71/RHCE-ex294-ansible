@@ -1,0 +1,19 @@
+---
+- name: Create report
+  hosts: all
+  tasks:
+    - name: copy report to /tmp/hw_report.txt
+      ansible.builtin.copy:
+        src: hwreport.empty
+        dest: /tmp/hw_report.txt
+    - name: Replace inventory
+      ansible.builtin.lineinfile:
+        path: /tmp/hw_report.txt
+        search_string: 'hostname'
+        line: "{{ inventory_hostname }}"
+    - name: Replace inventory
+      ansible.builtin.lineinfile:
+        path: /tmp/hw_report.txt
+        search_string: 'biosversion'
+        line: "{{ ansible_facts['bios_version'] }}"
+
