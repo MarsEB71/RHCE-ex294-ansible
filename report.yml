@@ -2,18 +2,48 @@
 - name: Create report
   hosts: all
   tasks:
+
     - name: copy report to /tmp/hw_report.txt
       ansible.builtin.copy:
         src: hwreport.empty
         dest: /tmp/hw_report.txt
+
     - name: Replace inventory
       ansible.builtin.lineinfile:
         path: /tmp/hw_report.txt
-        search_string: 'hostname'
-        line: "{{ inventory_hostname }}"
+        regexp: '^INVENTORY_HOSTNAME='
+        line: INVENTORY_HOSTNAME= "{{ inventory_hostname }}"
+
     - name: Replace inventory
       ansible.builtin.lineinfile:
         path: /tmp/hw_report.txt
-        search_string: 'biosversion'
-        line: "{{ ansible_facts['bios_version'] }}"
+        regexp: '^BIOS_VERSION='
+        line: BIOS_VERSION= "{{ ansible_facts['bios_version'] }}"
+
+    - name: Replace total memory
+      ansible.builtin.lineinfile:
+        path: /tmp/hw_report.txt
+        regexp: '^TOTAL_MEMORY='
+        line: TOTAL_MEMORY= "{{ ansible_facts['memtotal_mb'] }}"
+
+    - name: Replace VDB_SIZE when not defined
+      ansible.builtin.lineinfile:
+        path: /tmp/hw_report.txt
+        regexp: '^VDB_SIZE='
+        line: VDB_SIZE= "NONE"
+      when: ansible_facts['devices']['vdb'] is not defined
+
+    - name: Replace VDB_SIZE is defined
+      ansible.builtin.lineinfile:
+        path: /tmp/hw_report.txt
+        regexp: '^VDB_SIZE='
+        line: VDB_SIZE= "{{ ansible_facts['devices']['vdb']['size']}}"
+      when: ansible_facts['devices']['vdb'] is defined
+
+    - name: Replace VDA_SIZE
+      ansible.builtin.lineinfile:
+        path: /tmp/hw_report.txt
+        regexp: '^VDA_SIZE='
+        line: VDA_SIZE= "{{ ansible_facts['devices']['vda']['size']}}"
+    
 

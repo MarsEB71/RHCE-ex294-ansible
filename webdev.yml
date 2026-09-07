@@ -1,0 +1,83 @@
+---
+- name: web developement setup
+  hosts: dev
+  become: yes
+  tasks:
+    
+    - name: install httpd
+      ansible.builtin.dnf:
+        name: httpd
+        state: latest
+
+    - name: install firewalld and python bindings
+      ansible.builtin.dnf:
+      name:
+        - firewalld
+        - python3-firewall
+      state: present
+
+    - name: ensure firewalld service is running
+      ansible.builtin.systemd_service:
+        name: firewalld
+        state: started
+        enabled: true
+
+    - name: Permanently enable http service, also enable it immediately if possible
+      ansible.posix.firewalld:
+        service: http
+        state: enabled
+        permanent: true
+        immediate: true
+
+    - name: Make sure httpd service unit is running
+      ansible.builtin.systemd_service:
+        state: started
+        name: httpd
+
+    - name: create webdev user
+      ansible.builtin.user:
+        name: webdev
+        state: present
+
+    - name: create webdev directory
+      ansible.builtin.file:
+        path: /webdev
+        state: directory
+        mode: '2755'
+        owner: webdev
+        group: webdev
+
+    - name: Create a symbolic link
+      ansible.builtin.file:
+        src: /webdev
+        dest: /var/www/html/webdev
+        state: link
+
+    - name: DevOps index.html
+      ansible.builtin.copy:
+        content: 'DevOps'
+        dest: /webdev/index.html
+
+    - name: set sefcontect for /webdev
+      community.general.sefcontext:
+        target: '/webdev(/.*)?'
+        setype: httpd_sys_content_t
+        state: present
+
+    - name: restorecon on webdev and notify httpd restart
+      ansible.builtin.command:
+        cmd: restorecon -Rv /webdev
+      notify: Restart Httpd
+
+    - name: restorecon on /var/www/html/webdev and notify httpd restart
+      ansible.builtin.command:
+        cmd: restorecon -Rv /var/www/html/webdev
+      notify: Restart Httpd
+
+  handlers:
+    - name: Restart Httpd
+      ansible.builtin.systemd_service:
+        name: httpd
+        state: restarted
+        
+
