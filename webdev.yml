@@ -62,12 +62,12 @@
 
     - name: restorecon on webdev and notify httpd restart
       ansible.builtin.command:
-        cmd: restorecon -Rv /webdev
-      notify: Restart Httpd
-
-    - name: restorecon on /var/www/html/webdev and notify httpd restart
-      ansible.builtin.command:
-        cmd: restorecon -Rv /var/www/html/webdev
+        cmd: restorecon -Rv "{{ item }}"
+      loop:
+        - /webdev
+        - /var/www/html/webdev
+      register: restorecon_result
+      changed_when: "'Relabeled' in restorecon_result.stdout"
       notify: Restart Httpd
 
   handlers:
