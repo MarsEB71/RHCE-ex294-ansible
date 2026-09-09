@@ -8,11 +8,14 @@
       - python3-firewall
     state: present
 
-- name: Enable and start httpd
+- name: Enable and start httpd & firewalld
   ansible.builtin.systemd_service:
-    name: httpd
+    name: "{{ item }}"
     state: started
     enabled: true
+  loop:
+    - httpd
+    - firewalld
 
 - name: Permanently enable http service, also enable it immediately if possible
   ansible.posix.firewalld:
