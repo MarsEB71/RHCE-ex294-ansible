@@ -9,7 +9,7 @@
         state: directory
         owner: eric
         group: eric
-        mode: '2664'
+        mode: '0664'
 
     - name: Use gzip to compress /etc on controller node
       community.general.archive:
@@ -23,7 +23,7 @@
         state: directory
         owner: eric
         group: eric
-        mode: '2664' 
+        mode: '0664' 
       delegate_to: localhost
 
     - name: Storing in a path relative to the playbook
