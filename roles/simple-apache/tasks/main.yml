@@ -2,21 +2,21 @@
 # tasks file for simple-apache
 - name: install httpd
   ansible.builtin.dnf:
-    - name: httpd
-    - state: present 
+    name: httpd
+    state: present 
 
 - name: Enable and start httpd
   ansible.builtin.systemd_service:
-    - name: httpd
-    - state: started
-    - enabled: true
+    name: httpd
+    state: started
+    enabled: true
 
 - name: Permanently enable http service, also enable it immediately if possible
   ansible.posix.firewalld:
-    - service: http
-    - permanent: true
-    - state: enabled
-    - immediate: true
+    service: http
+    permanent: true
+    state: enabled
+    immediate: true
 
 - name: Template a file to /var/www/html
   ansible.builtin.template:
