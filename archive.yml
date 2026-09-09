@@ -1,7 +1,6 @@
 ---
 - name: create archive playbook
   hosts: all
-  become: yes
   tasks:
     - name: create /archive dir on all managed nodes
       ansible.builtin.file:
@@ -9,7 +8,7 @@
         state: directory
         owner: eric
         group: eric
-        mode: '0664'
+        mode: '2664'
 
     - name: Use gzip to compress /etc on controller node
       community.general.archive:
@@ -23,7 +22,7 @@
         state: directory
         owner: eric
         group: eric
-        mode: '0664' 
+        mode: '2664' 
       delegate_to: localhost
 
     - name: Storing in a path relative to the playbook
