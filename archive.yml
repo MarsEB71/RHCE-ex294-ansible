@@ -1,6 +1,6 @@
 ---
 - name: create archive playbook
-  hosts: ALL
+  hosts: all
   become: yes
   tasks:
     - name: create /archive dir on all managed nodes
