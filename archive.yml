@@ -1,6 +1,7 @@
 ---
 - name: create archive playbook
   hosts: all
+  become: true
   tasks:
     - name: create /archive dir on all managed nodes
       ansible.builtin.file:
@@ -8,7 +9,7 @@
         state: directory
         owner: eric
         group: eric
-        mode: '2664'
+        mode: '2775'
 
     - name: Use gzip to compress /etc on controller node
       community.general.archive:
@@ -16,13 +17,21 @@
         dest: /archive/conf.gz
         format: gz
 
+    - name: set ownership and permissions on the archive file (managed nodes)
+      ansible.builtin.file:
+        path: /archive/conf.gz
+        owner: eric
+        group: eric
+        mode: '0660'
+
     - name: create /archive dir controller node
       ansible.builtin.file:
         path: /archive
         state: directory
         owner: eric
         group: eric
-        mode: '2664' 
+        mode: '2775'
+      become: true 
       delegate_to: localhost
 
     - name: Storing in a path relative to the playbook
@@ -30,6 +39,15 @@
         src: /archive/conf.gz
         dest: /archive/{{ inventory_hostname }}-conf.gz
         flat: yes
+
+    - name: set ownership and permissions on fetched archive (control node)
+      ansible.builtin.file:
+        path: /archive/{{ inventory_hostname }}-conf.gz
+        owner: eric
+        group: eric
+        mode: '0660'
+      become: true
+      delegate_to: localhost
 
 
 

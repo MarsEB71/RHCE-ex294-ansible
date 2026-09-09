@@ -1,0 +1,23 @@
+---
+- name: Manage SELinux policy
+  hosts: webserver
+  vars:
+    # Use "targeted" SELinux policy type
+    selinux_policy: targeted
+    # Set "enforcing" mode
+    selinux_state: enforcing
+    # Switch some SELinux booleans
+    selinux_booleans:
+      # Set the httpd_can_network_connect, httpd_can_connect_zabbix, zabbix_can_network boolean to 'on' permanently
+      - name: httpd_can_network_connect
+        state: true
+        persistent: true
+      - name: httpd_can_connect_zabbix
+        state: true
+        persistent: true
+      - name: zabbix_can_network
+        state: true
+        persistent: true
+   
+  roles:
+    - rhel-system-roles.selinux
