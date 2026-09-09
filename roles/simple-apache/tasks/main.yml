@@ -1,9 +1,12 @@
 ---
 # tasks file for simple-apache
-- name: install httpd
+- name: install firewall, python3-firewall and httpd
   ansible.builtin.dnf:
-    name: httpd
-    state: present 
+    name:
+      - httpd
+      - firewalld
+      - python3-firewall
+    state: present
 
 - name: Enable and start httpd
   ansible.builtin.systemd_service:
