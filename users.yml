@@ -1,0 +1,43 @@
+---
+- name: Create users on dev node
+  hosts: dev
+  become: yes
+  vars:
+    - lock.yml
+    - user_list.yml
+  tasks:
+    - name: create devops group on dev
+      ansible.builtin.group:
+        name: devops
+        state: present
+
+    - name: create users
+      ansible.builtin.user:
+        name: "{{ item.name }}"
+        password: "{{ pass_dev | password_hash('sha512', 'mysecretsalt') }}"
+        group: devops
+        state: present
+      loop: "{{ users }}"
+      when: item.job == 'developer'
+
+- name: Create users on proxy node
+  hosts: proxy
+  become: yes
+  vars:
+    - lock.yml
+    - user_list.yml
+  tasks:
+    - name: create group managers
+      ansible.builtin.group:
+        name: managers
+        state: present
+    
+    - name: create users
+      ansible.builtin.user:
+        name: "{{ item.name }}"
+        password: "{{ pass_mgr | password_hash('sha512', 'mysecretsalt')}}"
+        state: present
+        group: managers
+      loop: "{{ users }}"
+      when: item.job == 'manager'
+
