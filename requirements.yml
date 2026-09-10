@@ -1,0 +1,8 @@
+---
+roles:
+  - src: https://github.com/geerlingguy/ansible-role-git
+    name: git
+    vserion : 3.0.0
+
+  - src: geerlingguy.nginx
+    version: 3.1.3
