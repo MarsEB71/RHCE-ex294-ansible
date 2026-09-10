@@ -1,0 +1,20 @@
+---
+- hosts: all
+  tasks:
+    - name: Replace content of /etc/motd on dev
+      copy:
+        content: 'Test Server'
+        dest: /etc/motd
+      when: "'dev' in group_names"
+
+    - name: Replace content of /etc/motd on webserver
+      copy:
+        content: 'Apache Server'
+        dest: /etc/motd
+      when: "'webserver' in group_names" 
+
+    - name: Replace content of /etc/motd on proxy
+      copy:
+        content: 'Proxy Server'
+        dest: /etc/motd
+      when: "'proxy' in group_names" 
