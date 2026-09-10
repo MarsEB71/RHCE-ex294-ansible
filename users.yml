@@ -2,7 +2,7 @@
 - name: Create users on dev node
   hosts: dev
   become: yes
-  vars:
+  vars_files:
     - lock.yml
     - user_list.yml
   tasks:
@@ -23,7 +23,7 @@
 - name: Create users on proxy node
   hosts: proxy
   become: yes
-  vars:
+  vars_files:
     - lock.yml
     - user_list.yml
   tasks:
