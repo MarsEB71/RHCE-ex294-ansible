@@ -5,6 +5,56 @@
   tasks:
     - name: create partition
       community.general.parted:
-        device: /dev/sdb
+        device: /dev/vdb
         number: 1
         state: present
+    
+    - name: create volume group vg1
+      community.general.lvg:
+        vg: vg1
+        pvs: /dev/vdb1
+        state: present
+    
+    - name: Create a directory /mock3
+      ansible.builtin.file:
+        path: /mock3
+        state: directory
+      
+
+    - name: update facts
+      ansible.builtin.setup:
+    
+    - fail:
+        msg: "Volume group vg1 does not exist"
+      when: ansible_facts['lvm']['vgs']['vg1'] is not defined
+    
+    - name: Block and rescue task
+      block:
+        - name: Create a logical volume of 1.6g
+          community.general.lvol:
+            vg: vg1
+            lv: lv1
+            size: 1.6g
+      rescue:
+        - name: fail msg
+          fail:
+            msg: "Not enough space for logical volume"
+          when: ansible_facts['lvm']['vgs']['vg1']['size_g'] | float < 0.9
+
+        - name: Create lv1 logical volume with 900Mib
+          community.general.lvol:
+            vg: vg1
+            lv: lv1
+            size: 900m
+    
+    - name: format XFS /dev/vg1/lv1
+      community.general.filesystem:
+        fstype: xfs
+        dev: /dev/vg1/lv1
+    
+    - name: Mount lv1 to /mock3
+      ansible.posix.mount:
+        path: /mock3
+        src: /dev/vg1/lv1
+        state: mounted
+        fstype: xfs
